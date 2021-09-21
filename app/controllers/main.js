@@ -56,8 +56,9 @@ function themUser() {
     var moTa = getELE("MoTa").value;
     //console.table(tk,hoTen,mk,email,loai,ngonNgu,moTa,hinh);
 
-    var user = new User(tk, hoTen, mk, email, loai, ngonNgu, moTa, hinh);
-            svUsers.them(user)
+    if (checkValitdation()) {
+        var user = new User(tk, hoTen, mk, email, loai, ngonNgu, moTa, hinh);
+        svUsers.them(user)
             .then(function (response) {
                 layDSUser();
                 document.querySelector("#myModal .close").click();
@@ -65,8 +66,9 @@ function themUser() {
             .catch(function (error) {
                 console.log(error);
             })
-        };
-    
+    }
+};
+
 
 document.querySelector("#btnThemNguoiDung").addEventListener("click", function () {
     document.querySelector(".modal-footer").innerHTML = `
@@ -106,18 +108,20 @@ function capNhat(id) {
     var ngonNgu = getELE("loaiNgonNgu").value;
     var moTa = getELE("MoTa").value;
 
-    var user = new User(tk, hoTen, mk, email, hinh, loai, ngonNgu, moTa)
+    //if(checkValitdation()){
+        var user = new User(tk, hoTen, mk, email, hinh, loai, ngonNgu, moTa)
     // console.table(user);
     svUsers.capNhatUser(user, id)
         .then(function (response) {
-            console.log(response.data);
+            //console.log(response.data);
             layDSUser();
             document.querySelector("#myModal .close").click();
         })
         .catch(function (error) {
             console.log(error);
         })
-}
+    }
+//}
 
 //Xoá
 function xoa(id) {
@@ -129,24 +133,23 @@ function xoa(id) {
         .catch(function (error) {
             console.log(error);
         })
-}
+};
+
 
 function layDSND() {
     svUsers.layDS()
         .then(function (response) {
-            console.log(response.data);
-           // hienThiTable(response.data);
+            console.log(response.data);            
         })
         .catch(function (error) {
             console.log(error);
-           // hienThiTable(error);
         })
 }
-layDSND();
+//layDSND();
 
 //Validation
 
-function Validation (){
+function checkValitdation() {
     var tk = getELE("TaiKhoan").value;
     var hoTen = getELE("HoTen").value;
     var mk = getELE("MatKhau").value;
@@ -184,5 +187,5 @@ function Validation (){
 
     return isValid;
 }
-//getELE("btnthem").addEventListener("click",Validation());
+
 
