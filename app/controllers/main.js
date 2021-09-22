@@ -13,8 +13,8 @@ function layDSUser() {
             hienThiTable(response.data);
         })
         .catch(function (error) {
-            //console.log(error);
-            hienThiTable(error);
+            console.log(error);
+           
         })
 }
 layDSUser();
@@ -43,6 +43,18 @@ function hienThiTable(mangUsers) {
     });
     document.getElementById('tblDanhSachNguoiDung').innerHTML = content;
 }
+
+//Clear dữ liệu
+clear = ()=>{
+    getELE('TaiKhoan').value = '';
+    getELE('HoTen').value = '';
+    getELE('MatKhau').value = '';
+    getELE('Email').value = '';
+    getELE('HinhAnh').value = '';
+    getELE('loaiNguoiDung').value = '';
+    getELE('loaiNgonNgu').value = '';
+    getELE('MoTa').value = '';
+}
 //Thêm
 function themUser() {
     //lấy thông tin từ form
@@ -56,19 +68,27 @@ function themUser() {
     var moTa = getELE("MoTa").value;
     //console.table(tk,hoTen,mk,email,loai,ngonNgu,moTa,hinh);
 
-    if (checkValitdation()) {
-        var user = new User(tk, hoTen, mk, email, loai, ngonNgu, moTa, hinh);
-        svUsers.them(user)
-            .then(function (response) {
-                layDSUser();
-                document.querySelector("#myModal .close").click();
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-    }
-};
-
+    svUsers.layDS()
+    .then(function(response){
+        if (checkValid(tk, hoTen, mk, email, hinh, "loaiNguoiDung", "loaiNgonNgu", moTa, response.data)) {
+            var user = new User(tk, hoTen, mk, email, loai, ngonNgu, moTa, hinh);
+            svUsers.them(user)
+                .then(function (response) {
+                    clear();
+                    layDSUser();
+                    document.querySelector("#myModal .close").click();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        }
+    })
+    .catch(function(error){
+        console.log("Thất bại" + error);
+    })
+   // checkValitdation();
+    //if (isValid) 
+}
 
 document.querySelector("#btnThemNguoiDung").addEventListener("click", function () {
     document.querySelector(".modal-footer").innerHTML = `
@@ -90,6 +110,7 @@ function layChiTiet(id) {
             document.querySelector(".modal-footer").innerHTML = `
        <button class = "btn btn-success" onclick = "capNhat('${response.data.id}');">Cập Nhật</button>
        `;
+       document.querySelector('#termTK').innerHTML = response.data.taiKhoan;
 
         })
         .catch(function (error) {
@@ -145,47 +166,38 @@ function layDSND() {
             console.log(error);
         })
 }
-//layDSND();
 
 //Validation
 
-function checkValitdation() {
-    var tk = getELE("TaiKhoan").value;
-    var hoTen = getELE("HoTen").value;
-    var mk = getELE("MatKhau").value;
-    var email = getELE("Email").value;
-    var hinh = getELE("HinhAnh").value;
-    var loai = getELE("loaiNguoiDung").value;
-    var ngonNgu = getELE("loaiNgonNgu").value;
-    var moTa = getELE("MoTa").value;
-
-    var isValid = true;
-    layDSND();
-
-    isValid &= valid.checkEmpty(tk, "spanTK", "Hãy nhập tài khoản") && valid.checkDup(tk, "spanTK", "Tài khoản bị trùng", response.data)
+function checkValid (taiKhoan, hoTen, matKhau, email, hinhAnh, loaiND, ngonNgu, moTa, mang, termTK) {
+    //console.log(taiKhoan, hoTen, matKhau, email, hinhAnh, loaiND, ngonNgu, moTa, mang,termTK);
+    var isValid = true
+    //check Tài Khoản
+    isValid &= valid.checkEmpty(taiKhoan, "spanTK", "Hãy nhập tài khoản") && valid.checkDup(taiKhoan, "spanTK", "Tài khoản bị trùng", mang,termTK);
 
     //check Họ Tên
-    isValid &= valid.checkEmpty(hoTen, "spanHoTen", "Hãy nhập Họ Tên") && valid.checkName(hoTen, "spanHoTen", "Họ Tên không được có số và ký tự đặc biệt")
+    isValid &= valid.checkEmpty(hoTen, "spanHoTen", "Hãy nhập Họ Tên") && valid.checkName(hoTen, "spanHoTen", "Họ Tên không hợp lệ");
 
     //Check Mật Khẩu
-    isValid &= valid.checkEmpty(mk, "spanMK", "Hãy nhập mật khẩu") && valid.checkPass(mk, "spanMK", "Nhập từ 6 ký tự trở lên có ít nhất 1 ký tự Hoa, 1 ký tự thường và 1 số")
+    isValid &= valid.checkEmpty(matKhau, "spanMK", "Hãy nhập mật khẩu hợp lệ (có ít nhất 1 ký tự hoa, 1 ký tự đặc biệt, 1 ký tự số, độ dài 6-8)") && valid.checkPass(matKhau, "spanMK", "Mật khẩu không hợp lệ");
 
     //check Email
-    isValid &= valid.checkEmpty(email, "spanEmail", "Hãy nhập Email") && valid.checkEmail(email, "spanEmail", "Email phải đúng định dạng abc@mail.com")
+    isValid &= valid.checkEmpty(email, "spanEmail", "Hãy nhập Email") && valid.checkEmail(email, "spanEmail", "Email không hợp lệ");
 
     //check Hình Ảnh 
-    isValid &= valid.checkEmpty(hinh, "spanHinh", "Hình ảnh không được để trống")
+    isValid &= valid.checkEmpty(hinhAnh, "spanHinh", "Hình Ảnh không được để trống");
 
     //check loại người dùng
-    isValid &= valid.checkloaiNguoiDung("loaiNguoiDung", "spanLoai", "Bắt buộc chọn loại người dùng")
+    isValid &= valid.checkloaiNguoiDung("loaiNguoiDung", "spanLoai", "Hãy chọn loại người dùng");
 
     //check loại ngôn ngữ
-    isValid &= valid.checkNgonNgu("loaiNgonNgu", "spanNN", "Bắt buộc chọn ngôn ngữ")
+    isValid &= valid.checkNgonNgu("loaiNgonNgu", "spanNN", "Hãy chọn ngôn ngữ");
 
     //check mô tả
-    isValid &= valid.checkEmpty(moTa, "spanMT", "Hãy nhập mô tả") && valid.checkMoTa(moTa, "spanMT", "Mô tả không được quá 60 ký tự")
+    isValid &= valid.checkEmpty(moTa, "spanMT", "Hãy nhập mô tả") && valid.checkMoTa(moTa, "spanMT", "Mô tả không được quá 60 ký tự");
 
     return isValid;
 }
+
 
 

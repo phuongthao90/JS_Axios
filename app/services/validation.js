@@ -12,18 +12,19 @@ function Validation() {
             return true;
         }
     }
-    this.checkDup = function (inputval, spanID, message, mang) {
+    this.checkDup = function (inputval, spanID, message, mang, termTK) {
         //Kiểm tra TK đã tồn tại trong mảng
         var isExist = false;
         isExist = mang.some(function (item) {
             return item.taiKhoan === inputval.trim();
         });
-        if (isExist) {
-            //không hợp lệ
+        if (isExist && inputval.trim() !== termTK) {
+            // Mã bị trùng, không hợp lệ
             document.getElementById(spanID).innerHTML = message;
             return false;
-        } else {
-            //hợp lệ
+        }
+        else {
+            // hợp lệ
             document.getElementById(spanID).innerHTML = "";
             return true;
         }
@@ -43,8 +44,9 @@ function Validation() {
         }
     }
     this.checkPass = function (inputVal, spanID, message) {
-        var passFormat = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-        if (passFormat.test(inputVal)) {
+        var passFormat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,8}$/;
+
+        if (inputVal.match(passFormat)) {
             // hợp lệ
             document.getElementById(spanID).innerHTML = "";
             return true;
@@ -67,7 +69,7 @@ function Validation() {
         }
     }
     this.checkloaiNguoiDung = function (selID, spanID, message) {
-        console.log(document.getElementById(selID).selectedIndex)
+        //console.log(document.getElementById(selID).selectedIndex)
         var optValue = document.getElementById(selID).selectedIndex;
         if (optValue != 0) {
             document.getElementById(spanID).innerHTML = "";
@@ -102,8 +104,5 @@ function Validation() {
             return false;
         }
     }
-
-
-
 
 }
