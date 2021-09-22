@@ -1,11 +1,12 @@
-function User(tk,hoTen,mk,email,loai,ngonNgu,moTa,hinh){
-    this.taiKhoan = tk
-    this.hoTen = hoTen;
-    this.matKhau = mk;
-    this.email = email;
-    this.hinhAnh = hinh;
-    this.loaiND = loai;
-    this.ngonNgu = ngonNgu;
-    this.moTa = moTa;
-    
+class Users{
+    constructor(taiKhoan,hoTen,matKhau,email,loaiND,ngonNgu,moTa,hinhAnh){
+        this.taiKhoan = taiKhoan
+        this.hoTen = hoTen
+        this.matKhau = matKhau
+        this.email = email
+        this.loaiND = loaiND
+        this.ngonNgu = ngonNgu
+        this.moTa = moTa
+        this.hinhAnh = hinhAnh
+    }
 }
