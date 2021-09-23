@@ -17,7 +17,7 @@ layDSUser = () => {
     userServices.layDanhSachUsers()
         .then(response => {
             //Thành công
-            console.log(response.data)
+            //console.log(response.data)
             hienthiTable(response.data)
         })
         //Thất bại
@@ -58,8 +58,6 @@ themUserfc = () => {
     let ngonNgu = document.querySelector('#loaiNgonNgu').value;
     let moTa = document.querySelector('#MoTa').value;
 
-
-
     userServices.layDanhSachUsers()
         .then(response => {
             //Thành công
@@ -68,7 +66,7 @@ themUserfc = () => {
                 let user = new Users(taiKhoan, hoTen, matKhau, email, loaiND, ngonNgu, moTa, hinhAnh);
                 userServices.themUser(user)
                     .then(response => {
-                        console.log(response.data.taiKhoan)
+                        //console.log(response.data.taiKhoan)
                         clear();
                         layDSUser()
                         document.querySelector("#myModal .close").click()
@@ -80,7 +78,7 @@ themUserfc = () => {
         })
         //Thất bại
         .catch(error => {
-            console.log("Thất bại: " + error)
+            console.log(error)
         })
 }
 document.querySelector('#btnThemNguoiDung').addEventListener("click", () => {
@@ -124,26 +122,26 @@ capnhat = id => {
     userServices.layDanhSachUsers()
         .then(response => {
             //Thành công
-            console.log(response.data)
+            //console.log(response.data)
             if (checkValid(taiKhoan, hoTen, matKhau, email, hinhAnh, "loaiNguoiDung", "loaiNgonNgu", moTa, response.data, termTK)) {
                 let user = new Users(taiKhoan, hoTen, matKhau, email, loaiND, ngonNgu, moTa, hinhAnh);
 
                 userServices.capnhatUser(user, id)
                     .then(response => {
-                        console.log(response.data)
+                        //console.log(response.data)
                         document.querySelector('#termTK').value = '';
                         clear();
                         layDSUser();
                         document.querySelector("#myModal .close").click();
                     })
                     .catch(error => {
-                        console.log(error)
+                        console.log(error);
                     })
             }
         })
         //Thất bại
         .catch(error => {
-            console.log("Thất bại: " + error)
+            console.log(error);
         })
 }
 
@@ -151,7 +149,7 @@ capnhat = id => {
 xoa = (id) => {
     userServices.xoaUser(id)
         .then(response => {
-            console.log(response.data)
+            //console.log(response.data)
             layDSUser()
         })
         .catch(error => {
